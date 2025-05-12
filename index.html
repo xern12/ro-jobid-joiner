@@ -19,11 +19,20 @@
                     <input type="text" id="placeId" placeholder="Enter or select Place ID" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label for="jobId" class="block text-sm font-medium text-gray-700">Job ID</label>
-                    <input type="text" id="jobId" placeholder="Enter Job ID" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label for="jobId" class="block text-sm font-medium text-gray-700">Job ID (Optional)</label>
+                    <input type="text" id="jobId" placeholder="Enter Job ID for specific server" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="bootstrapper" class="block text-sm font-medium text-gray-700">Bootstrapper</label>
+                    <select id="bootstrapper" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="roblox">Roblox (Default)</option>
+                        <option value="bloxstrap">Bloxstrap</option>
+                        <option value="fishstrap">Fishstrap</option>
+                    </select>
+                    <p class="text-sm text-gray-500 mt-1">Ensure Bloxstrap or Fishstrap is installed if selected. <a href="https://bloxstraplabs.com" target="_blank" class="text-blue-500 hover:underline">Download Bloxstrap</a> | <a href="https://fishstrap.org" target="_blank" class="text-blue-500 hover:underline">Download Fishstrap</a></p>
                 </div>
                 <button onclick="joinGame()" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">Join Game</button>
-                <p id="error" class="text-red-500 text-sm hidden">Please enter both Place ID and Job ID.</p>
+                <p id="error" class="text-red-500 text-sm hidden">Please enter a Place ID.</p>
                 <p id="success" class="text-green-500 text-sm hidden">Attempting to join the game...</p>
             </div>
         </div>
@@ -35,6 +44,7 @@
             <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto">
                 <!-- Game items will be populated by JavaScript -->
             </div>
+            <p class="text-sm text-gray-500 mt-2">Showing top 20 games. To add more, edit the <code>games</code> array in the source code with additional PlaceIDs from <a href="https://roblox.fandom.com/wiki/List_of_places_with_the_most_visits" target="_blank" class="text-blue-500 hover:underline">Roblox Wiki</a>.</p>
         </div>
     </div>
 
@@ -61,8 +71,7 @@
             { name: "Flee the Facility", placeId: "893973440" },
             { name: "All Star Tower Defense", placeId: "5799286148" },
             { name: "Doors", placeId: "6516141723" }
-            // Add remaining 80 games here...
-            // Example: { name: "Game Name", placeId: "PlaceID" }
+            // Add remaining 80 games here, e.g., { name: "Natural Disaster Survival", placeId: "189707" }
         ];
 
         // Populate catalog
@@ -97,6 +106,7 @@
         function joinGame() {
             const placeId = placeIdInput.value.trim();
             const jobId = document.getElementById('jobId').value.trim();
+            const bootstrapper = document.getElementById('bootstrapper').value;
             const error = document.getElementById('error');
             const success = document.getElementById('success');
 
@@ -105,18 +115,25 @@
             success.classList.add('hidden');
 
             // Validate inputs
-            if (!placeId || !jobId) {
+            if (!placeId) {
                 error.classList.remove('hidden');
                 return;
             }
 
             // Generate Roblox protocol URL
-            const robloxUrl = `roblox://placeId=${encodeURIComponent(placeId)}&gameInstanceId=${encodeURIComponent(jobId)}`;
+            let robloxUrl = `roblox://placeId=${encodeURIComponent(placeId)}`;
+            if (jobId) {
+                robloxUrl += `&gameInstanceId=${encodeURIComponent(jobId)}`;
+            }
 
             // Show success message
             success.classList.remove('hidden');
 
             // Attempt to open the Roblox game
+            if (bootstrapper === 'bloxstrap' || bootstrapper === 'fishstrap') {
+                // Note: Bloxstrap/Fishstrap must be installed and set as the default handler
+                success.innerText = `Attempting to join via ${bootstrapper.charAt(0).toUpperCase() + bootstrapper.slice(1)}. Ensure it is installed.`;
+            }
             window.location.href = robloxUrl;
 
             // Clear inputs after a short delay
@@ -124,6 +141,7 @@
                 placeIdInput.value = '';
                 document.getElementById('jobId').value = '';
                 success.classList.add('hidden');
+                success.innerText = 'Attempting to join the game...';
             }, 2000);
         }
     </script>

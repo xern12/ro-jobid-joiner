@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+    <div class="bg-white p-8 rounded-lg shadow-lg W-full max-w-4xl">
         <h1 class="text-2xl font-bold text-center mb-6">Roblox Game Joiner</h1>
         
         <!-- Join Game Form -->
@@ -16,35 +16,35 @@
             <div class="space-y-4">
                 <div>
                     <label for="placeId" class="block text-sm font-medium text-gray-700">Place ID</label>
-                    <input type="text" id="placeId" placeholder="Enter or select Place ID" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="placeId" placeholder="Enter or select Place ID" class="mt-1 W-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
                     <label for="jobId" class="block text-sm font-medium text-gray-700">Job ID (Optional)</label>
-                    <input type="text" id="jobId" placeholder="Enter Job ID for specific server" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="jobId" placeholder="Enter Job ID for specific server" class="mt-1 W-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
                     <label for="bootstrapper" class="block text-sm font-medium text-gray-700">Bootstrapper</label>
-                    <select id="bootstrapper" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="roblox">Roblox (Default)</option>
+                    <select id="bootstrapper" class="mt-1 W-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="roblox">Roblox Desktop Client</option>
                         <option value="bloxstrap">Bloxstrap</option>
                         <option value="fishstrap">Fishstrap</option>
                     </select>
-                    <p class="text-sm text-gray-500 mt-1">Ensure Bloxstrap or Fishstrap is installed if selected. <a href="https://bloxstraplabs.com" target="_blank" class="text-blue-500 hover:underline">Download Bloxstrap</a> | <a href="https://fishstrap.org" target="_blank" class="text-blue-500 hover:underline">Download Fishstrap</a></p>
+                    <p class="text-sm text-gray-500 mt-1">Uses desktop client, not Windows Store. Ensure <a href="https://www.roblox.com/download" target="_blank" class="text-blue-500 hover:underline">Roblox Desktop Client</a>, <a href="https://bloxstraplabs.com" target="_blank" class="text-blue-500 hover:underline">Bloxstrap</a>, or <a href="https://fishstrap.org" target="_blank" class="text-blue-500 hover:underline">Fishstrap</a> is installed. <a href="https://support.microsoft.com/en-us/windows/change-default-programs-in-windows-10-e5d7d2b9-2c7e-4c4e-9c3b-4c5b7c7b7c7b" target="_blank" class="text-blue-500 hover:underline">Set default handler</a> if Windows Store opens.</p>
                 </div>
-                <button onclick="joinGame()" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">Join Game</button>
+                <button onclick="joinGame()" class="W-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">Join Game</button>
                 <p id="error" class="text-red-500 text-sm hidden">Please enter a Place ID.</p>
-                <p id="success" class="text-green-500 text-sm hidden">Attempting to join the game...</p>
+                <p id="success" class="text-green-500 text-sm hidden">Attempting to join the game via desktop client...</p>
             </div>
         </div>
 
         <!-- Game Catalog -->
         <div>
             <h2 class="text-lg font-semibold mb-4">Game Catalog</h2>
-            <input type="text" id="search" placeholder="Search games..." class="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" id="search" placeholder="Search games..." class="W-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto">
                 <!-- Game items will be populated by JavaScript -->
             </div>
-            <p class="text-sm text-gray-500 mt-2">Showing top 20 games. To add more, edit the <code>games</code> array in the source code with additional PlaceIDs from <a href="https://roblox.fandom.com/wiki/List_of_places_with_the_most_visits" target="_blank" class="text-blue-500 hover:underline">Roblox Wiki</a>.</p>
+            <p class="text-sm text-gray-500 mt-2">Showing top 20 games. To add more, edit the <code>games</code> array with PlaceIDs from <a href="https://roblox.fandom.com/wiki/List_of_places_with_the_most_visits" target="_blank" class="text-blue-500 hover:underline">Roblox Wiki</a>.</p>
         </div>
     </div>
 
@@ -71,7 +71,7 @@
             { name: "Flee the Facility", placeId: "893973440" },
             { name: "All Star Tower Defense", placeId: "5799286148" },
             { name: "Doors", placeId: "6516141723" }
-            // Add remaining 80 games here, e.g., { name: "Natural Disaster Survival", placeId: "189707" }
+            // Add remaining 80 games, e.g., { name: "Natural Disaster Survival", placeId: "189707" }
         ];
 
         // Populate catalog
@@ -121,19 +121,20 @@
             }
 
             // Generate Roblox protocol URL
-            let robloxUrl = `roblox://placeId=${encodeURIComponent(placeId)}`;
+            let robloxUrl = `roblox-player://placeId=${encodeURIComponent(placeId)}`;
             if (jobId) {
                 robloxUrl += `&gameInstanceId=${encodeURIComponent(jobId)}`;
             }
 
             // Show success message
             success.classList.remove('hidden');
+            if (bootstrapper === 'bloxstrap' || bootstrapper === 'fishstrap') {
+                success.innerText = `Attempting to join via ${bootstrapper.charAt(0).toUpperCase() + bootstrapper.slice(1)}. Ensure it is installed and set as default.`;
+            } else {
+                success.innerText = 'Attempting to join via Roblox desktop client...';
+            }
 
             // Attempt to open the Roblox game
-            if (bootstrapper === 'bloxstrap' || bootstrapper === 'fishstrap') {
-                // Note: Bloxstrap/Fishstrap must be installed and set as the default handler
-                success.innerText = `Attempting to join via ${bootstrapper.charAt(0).toUpperCase() + bootstrapper.slice(1)}. Ensure it is installed.`;
-            }
             window.location.href = robloxUrl;
 
             // Clear inputs after a short delay
@@ -141,7 +142,7 @@
                 placeIdInput.value = '';
                 document.getElementById('jobId').value = '';
                 success.classList.add('hidden');
-                success.innerText = 'Attempting to join the game...';
+                success.innerText = 'Attempting to join the game via desktop client...';
             }, 2000);
         }
     </script>

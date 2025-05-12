@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Game Joiner with Catalog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+        <h1 class="text-2xl font-bold text-center mb-6">Roblox Game Joiner</h1>
+        
+        <!-- Join Game Form -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-4">Join a Game</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="placeId" class="block text-sm font-medium text-gray-700">Place ID</label>
+                    <input type="text" id="placeId" placeholder="Enter or select Place ID" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="jobId" class="block text-sm font-medium text-gray-700">Job ID</label>
+                    <input type="text" id="jobId" placeholder="Enter Job ID" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button onclick="joinGame()" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">Join Game</button>
+                <p id="error" class="text-red-500 text-sm hidden">Please enter both Place ID and Job ID.</p>
+                <p id="success" class="text-green-500 text-sm hidden">Attempting to join the game...</p>
+            </div>
+        </div>
+
+        <!-- Game Catalog -->
+        <div>
+            <h2 class="text-lg font-semibold mb-4">Game Catalog</h2>
+            <input type="text" id="search" placeholder="Search games..." class="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto">
+                <!-- Game items will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game catalog with top 20 most played games (expand to top 100)
+        const games = [
+            { name: "Brookhaven RP", placeId: "920587237" },
+            { name: "Blox Fruits", placeId: "2753915549" },
+            { name: "Adopt Me!", placeId: "271659199" },
+            { name: "Tower of Hell", placeId: "1962086868" },
+            { name: "Pet Simulator X", placeId: "6284583030" },
+            { name: "Murder Mystery 2", placeId: "142823291" },
+            { name: "MeepCity", placeId: "606849621" },
+            { name: "Piggy", placeId: "4623386862" },
+            { name: "The Strongest Battlegrounds", placeId: "735030788" },
+            { name: "BedWars", placeId: "6872265039" },
+            { name: "Welcome to Bloxburg", placeId: "185655149" },
+            { name: "Royale High", placeId: "1962086868" },
+            { name: "Jailbreak", placeId: "606849621" },
+            { name: "Arsenal", placeId: "286090429" },
+            { name: "Work at a Pizza Place", placeId: "192800" },
+            { name: "Hide and Seek Extreme", placeId: "404946177" },
+            { name: "Mad City", placeId: "1224212277" },
+            { name: "Flee the Facility", placeId: "893973440" },
+            { name: "All Star Tower Defense", placeId: "5799286148" },
+            { name: "Doors", placeId: "6516141723" }
+            // Add remaining 80 games here...
+            // Example: { name: "Game Name", placeId: "PlaceID" }
+        ];
+
+        // Populate catalog
+        const catalog = document.getElementById('catalog');
+        const search = document.getElementById('search');
+        const placeIdInput = document.getElementById('placeId');
+
+        function renderCatalog(filteredGames) {
+            catalog.innerHTML = '';
+            filteredGames.forEach(game => {
+                const div = document.createElement('div');
+                div.className = 'p-4 bg-gray-50 rounded-md hover:bg-gray-100 cursor-pointer';
+                div.innerHTML = `<p class="font-medium">${game.name}</p><p class="text-sm text-gray-500">Place ID: ${game.placeId}</p>`;
+                div.onclick = () => {
+                    placeIdInput.value = game.placeId;
+                };
+                catalog.appendChild(div);
+            });
+        }
+
+        // Initial render
+        renderCatalog(games);
+
+        // Search functionality
+        search.addEventListener('input', () => {
+            const query = search.value.toLowerCase();
+            const filteredGames = games.filter(game => game.name.toLowerCase().includes(query));
+            renderCatalog(filteredGames);
+        });
+
+        // Join game function
+        function joinGame() {
+            const placeId = placeIdInput.value.trim();
+            const jobId = document.getElementById('jobId').value.trim();
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
+
+            // Reset messages
+            error.classList.add('hidden');
+            success.classList.add('hidden');
+
+            // Validate inputs
+            if (!placeId || !jobId) {
+                error.classList.remove('hidden');
+                return;
+            }
+
+            // Generate Roblox protocol URL
+            const robloxUrl = `roblox://placeId=${encodeURIComponent(placeId)}&gameInstanceId=${encodeURIComponent(jobId)}`;
+
+            // Show success message
+            success.classList.remove('hidden');
+
+            // Attempt to open the Roblox game
+            window.location.href = robloxUrl;
+
+            // Clear inputs after a short delay
+            setTimeout(() => {
+                placeIdInput.value = '';
+                document.getElementById('jobId').value = '';
+                success.classList.add('hidden');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
